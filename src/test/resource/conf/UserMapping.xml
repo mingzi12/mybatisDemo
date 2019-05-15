@@ -6,7 +6,7 @@
     <!-- 在select标签中编写查询的SQL语句， 设置select标签的id属性为getUser，id属性值必须是唯一的，不能够重复
     使用parameterType属性指明查询时使用的参数类型，resultType属性指明查询返回的结果集类型
     resultType="com.hmx.mybatis.mapping.model.User"就表示将查询结果封装成一个User类的对象返回
-    User类就是users表所对应的实体类
+    User类就是user表所对应的实体类
     -->
     <!--
         根据id查询得到一个user对象
@@ -14,5 +14,20 @@
     <select id="getUserById" parameterType="Integer"
             resultType="com.hmx.mybatis.model.User">
         select * from user where id=#{id}
+    </select>
+
+    <insert id="addUser" parameterType="com.hmx.mybatis.model.User">
+            insert into user (name,age) values (#{name},#{age})
+    </insert>
+
+    <delete id="deleteUserById" parameterType="com.hmx.mybatis.model.User">
+            delete from user where id= #{id}
+    </delete>
+
+    <update id="updateUserById" parameterType="com.hmx.mybatis.model.User">
+            update USER set name=#{name} where id=#{id}
+    </update>
+    <select id="getAllUsers" resultType="com.hmx.mybatis.model.User">
+            select id,name,age from  User
     </select>
 </mapper>
