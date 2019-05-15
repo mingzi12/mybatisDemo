@@ -4,7 +4,9 @@ import com.hmx.mybatis.model.User;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class UserDaoImplTest {
@@ -53,13 +55,16 @@ public class UserDaoImplTest {
          * addUser是select标签的id属性值，通过select标签的id属性值就可以找到要执行的SQL
          */
         String statement = "com.hmx.mybatis.mapping.UserMapping.addUser";//映射sql的标识字符串
-        //执行查询返回一个唯一user对象的sql
-        User user = new User("Lebron James", 34);
-        SqlSession session = SqlSessionUtil.getSqlSession();
-        int result = session.insert(statement, user);
-        //非查询操作，需要手动调用commit()函数，提交sql
-        session.commit();
-        System.out.println(result);
+        SqlSession session = null;
+        for (int i = 0; i < 10; i++) {
+            String userName = GeneratorUserNameUtil.generatorUserNmae(i);
+            User user = new User(userName, 34);
+            session = SqlSessionUtil.getSqlSession();
+            session.insert(statement, user);
+            //非查询操作，需要手动调用commit()函数，提交sql
+            session.commit();
+        }
+
         getAllUsersTest();
         SqlSessionUtil.close(session);
     }
@@ -101,6 +106,64 @@ public class UserDaoImplTest {
         System.out.println(result);
         getAllUsersTest();
         SqlSessionUtil.close(session);
+    }
+
+    /**
+     * @description: 根据用户名进行模糊查询
+     */
+
+    @Test
+    public void getUserByNameTest(){
+        /**
+         * 映射sql的标识字符串，
+         * com.hmx.mybatis.mapping.UserMapping是userMapper.xml文件中mapper标签的namespace属性的值，
+         * getUserByName是select标签的id属性值，通过select标签的id属性值就可以找到要执行的SQL
+         */
+        String statement = "com.hmx.mybatis.mapping.UserMapping.getUserByName";//映射sql的标识字符串
+        User user = new User();
+        user.setName("user");
+        SqlSession session = SqlSessionUtil.getSqlSession();
+        List<User> userList = session.selectList(statement, user);
+        printList(userList);
+        //getAllUsersTest();
+        SqlSessionUtil.close(session);
+    }
+
+    /**
+     * @description: 根据用户iD和用户名进行模糊查询
+     */
+
+    @Test
+    public void getUserByIDAndNameTest(){
+        /**
+         * 映射sql的标识字符串，
+         * com.hmx.mybatis.mapping.UserMapping是userMapper.xml文件中mapper标签的namespace属性的值，
+         * getUserByName是select标签的id属性值，通过select标签的id属性值就可以找到要执行的SQL
+         */
+        String statement = "com.hmx.mybatis.mapping.UserMapping.getUserByIdAndName";//映射sql的标识字符串
+        Map<String,Object> param = new HashMap<>(10);
+        param.put("id", 22);
+        param.put("name", "User");
+        SqlSession session = SqlSessionUtil.getSqlSession();
+        List<User> userList = session.selectList(statement, param);
+        printList(userList);
+        //getAllUsersTest();
+        SqlSessionUtil.close(session);
+    }
+
+
+    /**
+     * @description: 泛型方法，打印查询结果
+     * @param  list
+     *         查询结果
+     */
+    public <T> void printList(List<T> list) {
+        if (list == null) {
+            return;
+        }
+        for (T obj : list) {
+            System.out.println(obj);
+        }
     }
 
 
