@@ -150,6 +150,31 @@ public class UserDaoImplTest {
         //getAllUsersTest();
         SqlSessionUtil.close(session);
     }
+    /**
+     * @description: 动态Sql查询用户
+     */
+    @Test
+    public void getAllUsersTwoTest(){
+        /**
+         * 映射sql的标识字符串，
+         * com.hmx.mybatis.mapping.UserMapping是userMapper.xml文件中mapper标签的namespace属性的值，
+         * getAllUsers是select标签的id属性值，通过select标签的id属性值就可以找到要执行的SQL
+         */
+        String statement = "com.hmx.mybatis.mapping.UserMapping.getAllUsersTwo";//映射sql的标识字符串
+        //执行查询返回一个唯一user对象的sql
+
+        SqlSession session = SqlSessionUtil.getSqlSession();
+        //List<User> userList = session.selectList(statement);
+        Map<String, Object> param = new HashMap<>(10);
+        param.put("name", "user4");
+        List<User> userList = session.selectList(statement, param);
+        SqlSessionUtil.close(session);
+        for (User user : userList) {
+
+            System.out.println(user);
+
+        }
+    }
 
 
     /**

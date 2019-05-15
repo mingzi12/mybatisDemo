@@ -38,4 +38,11 @@
     <select id="getUserByIdAndName"  parameterType="map" resultType="User">
             select id,name,age from   user  where id > #{id}  and name like concat('%',#{name},'%')
     </select>
+
+    <select id="getAllUsersTwo" resultType="com.hmx.mybatis.model.User">
+            select id,name,age from User
+            <if test="name != null">
+                where name like concat('%', #{name}, '%')
+            </if>
+    </select>
 </mapper>
