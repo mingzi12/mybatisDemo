@@ -30,6 +30,11 @@
     <select id="getAllUsers" resultType="com.hmx.mybatis.model.User">
             select id,name,age from User
     </select>
+
+    <select id="getUsersByPagerHelper" resultType="com.hmx.mybatis.model.User">
+            select id,name,age from User
+    </select>
+
     <!--根据用户名模糊查询，使用concat函数拼接查询条件-->
     <select id="getUserByName" parameterType="User" resultType="com.hmx.mybatis.model.User">
             select id,name,age from  user  where name like concat('%',#{name},'%')

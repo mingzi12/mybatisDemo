@@ -1,5 +1,7 @@
 package com.hmx.mybatis;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hmx.mybatis.model.User;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
@@ -48,7 +50,9 @@ public class UserDaoImplTest {
         }
     }
 
-
+    /**
+     * @description: 动态sql查询用户
+     */
     @Test
     public void getUsersTest(){
         /**
@@ -72,6 +76,52 @@ public class UserDaoImplTest {
 
         }
     }
+
+
+    /**
+     * @description: 使用PagerHelper实现分页查询用户
+     */
+    @Test
+    public void getUsersByPagerHelperTest(){
+        /**
+         * 映射sql的标识字符串，
+         * com.hmx.mybatis.mapping.UserMapping是userMapper.xml文件中mapper标签的namespace属性的值，
+         * getAllUsers是select标签的id属性值，通过select标签的id属性值就可以找到要执行的SQL
+         */
+        String statement = "com.hmx.mybatis.mapping.UserMapping.getUsersByPagerHelper";//映射sql的标识字符串
+        //执行查询返回一个唯一user对象的sql
+
+        SqlSession session = SqlSessionUtil.getSqlSession();
+        int pageSize = 5;  //每页数据项
+        int pagerOffset =0;  // 偏移量
+        for (int i = 0; i < 5; i++) {
+            if (i != 0) {
+                pagerOffset = pagerOffset + pageSize;
+            }
+            PageHelper.offsetPage(pagerOffset, 5);
+            List<User> userList = session.selectList(statement);
+            for (User user : userList) {
+
+                System.out.println(user);
+
+            }
+
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        }
+
+        SqlSessionUtil.close(session);
+        /*PageHelper.offsetPage(0, 5);
+        List<User> userList = session.selectList(statement);
+        SqlSessionUtil.close(session);
+        PageInfo pageInfo = new PageInfo<>(userList);
+        System.out.println("总数："+pageInfo.getTotal());
+        System.out.println(pageInfo);
+        for (User user : userList) {
+
+            System.out.println(user);
+
+        }*/
+    }
     @Test
     public void insertUserTest(){
         /**
@@ -81,9 +131,9 @@ public class UserDaoImplTest {
          */
         String statement = "com.hmx.mybatis.mapping.UserMapping.addUser";//映射sql的标识字符串
         SqlSession session = null;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i <= 100; i++) {
             String userName = GeneratorUserNameUtil.generatorUserNmae(i);
-            User user = new User(userName, 34);
+            User user = new User(userName, i);
             session = SqlSessionUtil.getSqlSession();
             session.insert(statement, user);
             //非查询操作，需要手动调用commit()函数，提交sql
