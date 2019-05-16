@@ -4,6 +4,7 @@ import com.hmx.mybatis.model.User;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -245,6 +246,28 @@ public class UserDaoImplTest {
             System.out.println(user);
 
         }
+    }
+
+    /**
+     * @description: 根据用户名进行模糊查询
+     */
+
+    @Test
+    public void getUsersInScopeTest(){
+        /**
+         * 映射sql的标识字符串，
+         * com.hmx.mybatis.mapping.UserMapping是userMapper.xml文件中mapper标签的namespace属性的值，
+         * getUserByName是select标签的id属性值，通过select标签的id属性值就可以找到要执行的SQL
+         */
+        String statement = "com.hmx.mybatis.mapping.UserMapping.getUsersInScope";//映射sql的标识字符串
+        List<Integer> userIDs = new ArrayList<>(10);
+        userIDs.add(27);
+        userIDs.add(28);
+        SqlSession session = SqlSessionUtil.getSqlSession();
+        List<User> userList = session.selectList(statement, userIDs);
+        printList(userList);
+        //getAllUsersTest();
+        SqlSessionUtil.close(session);
     }
 
     /**

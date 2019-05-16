@@ -85,4 +85,13 @@
             </choose>
         </where>
     </select>
+    <!--使用foreach标签，实现sql中in范围查询-->
+    <select id="getUsersInScope" resultType="User">
+        SELECT  id,name,age FROM user
+        WHERE ID in
+        <foreach item="item" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>
