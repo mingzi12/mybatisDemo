@@ -45,4 +45,26 @@
                 where name like concat('%', #{name}, '%')
             </if>
     </select>
+    <!--使用where标签拼接动态SQL-->
+    <select id="getAllUsers3" resultType="com.hmx.mybatis.model.User">
+        select id,name,age from User
+        <where>
+            <if test="name != null">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="age != 0">
+                and age > #{age}
+            </if>
+        </where>
+    </select>
+    <!--使用set标签拼接动态SQL-->
+    <update id="updateUserByIdTwo" parameterType="User" >
+        update user
+        <set>
+            <if test="name != null">name=#{name},</if>
+            <if test="age > 0">age=#{age}</if>
+
+        </set>
+        where id=#{id}
+    </update>
 </mapper>

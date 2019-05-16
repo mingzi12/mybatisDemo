@@ -108,6 +108,26 @@ public class UserDaoImplTest {
         SqlSessionUtil.close(session);
     }
 
+    @Test
+    public void updateUserByIdTwoTest(){
+        /**
+         * 映射sql的标识字符串，
+         * com.hmx.mybatis.mapping.UserMapping是userMapper.xml文件中mapper标签的namespace属性的值，
+         * updateUserById是select标签的id属性值，通过select标签的id属性值就可以找到要执行的SQL
+         */
+        String statement = "com.hmx.mybatis.mapping.UserMapping.updateUserByIdTwo";//映射sql的标识字符串
+        User user = new User(26);
+        user.setName("Peter");
+        user.setAge(24);;
+        SqlSession session = SqlSessionUtil.getSqlSession();
+        int result = session.update(statement, user);
+        //非查询操作，需要手动调用commit()函数，提交sql
+        session.commit();
+        System.out.println(result);
+        getAllUsersTest();
+        SqlSessionUtil.close(session);
+    }
+
     /**
      * @description: 根据用户名进行模糊查询
      */
@@ -176,6 +196,32 @@ public class UserDaoImplTest {
         }
     }
 
+    /**
+     * @description: where标签拼接动态Sql查询用户
+     */
+    @Test
+    public void getAllUsers3Test(){
+        /**
+         * 映射sql的标识字符串，
+         * com.hmx.mybatis.mapping.UserMapping是userMapper.xml文件中mapper标签的namespace属性的值，
+         * getAllUsers是select标签的id属性值，通过select标签的id属性值就可以找到要执行的SQL
+         */
+        String statement = "com.hmx.mybatis.mapping.UserMapping.getAllUsers3";//映射sql的标识字符串
+        //执行查询返回一个唯一user对象的sql
+
+        SqlSession session = SqlSessionUtil.getSqlSession();
+        //List<User> userList = session.selectList(statement);
+        Map<String, Object> param = new HashMap<>(10);
+        param.put("name", "user");
+        param.put("age", 20);
+        List<User> userList = session.selectList(statement, param);
+        SqlSessionUtil.close(session);
+        for (User user : userList) {
+
+            System.out.println(user);
+
+        }
+    }
 
     /**
      * @description: 泛型方法，打印查询结果
