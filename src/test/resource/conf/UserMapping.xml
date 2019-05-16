@@ -67,4 +67,22 @@
         </set>
         where id=#{id}
     </update>
+
+    <!--使用when和otherwise标签拼接动态SQL，从而达到if else的效果，表示只有一个条件会拼接-->
+    <select id="getUsers" resultType="User">
+        SELECT id,name,age FROM user
+        <where>
+            <choose>
+                <when test="name != null">
+                    and name like concat('%',#{name},'%')
+                </when>
+                <when test="age > 0">
+                    and age &lt;  #{age}
+                </when>
+                <otherwise>
+                    and id > 0
+                </otherwise>
+            </choose>
+        </where>
+    </select>
 </mapper>
